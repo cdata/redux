@@ -1,6 +1,6 @@
-import { ActionTypes } from './createStore'
-import isPlainObject from 'lodash/isPlainObject'
-import warning from './utils/warning'
+import { ActionTypes } from './createStore.js'
+import isPlainObject from './isPlainObject.js';
+import warning from './utils/warning.js'
 
 function getUndefinedStateErrorMessage(key, action) {
   const actionType = action && action.type
