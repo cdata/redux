@@ -105,12 +105,6 @@ export default function combineReducers(reducers) {
   for (let i = 0; i < reducerKeys.length; i++) {
     const key = reducerKeys[i]
 
-    if (process.env.NODE_ENV !== 'production') {
-      if (typeof reducers[key] === 'undefined') {
-        warning(`No reducer provided for key "${key}"`)
-      }
-    }
-
     if (typeof reducers[key] === 'function') {
       finalReducers[key] = reducers[key]
     }
@@ -118,10 +112,6 @@ export default function combineReducers(reducers) {
   const finalReducerKeys = Object.keys(finalReducers)
 
   let unexpectedKeyCache
-  if (process.env.NODE_ENV !== 'production') {
-    unexpectedKeyCache = {}
-  }
-
   let shapeAssertionError
   try {
     assertReducerShape(finalReducers)
@@ -132,13 +122,6 @@ export default function combineReducers(reducers) {
   return function combination(state = {}, action) {
     if (shapeAssertionError) {
       throw shapeAssertionError
-    }
-
-    if (process.env.NODE_ENV !== 'production') {
-      const warningMessage = getUnexpectedStateShapeWarningMessage(state, finalReducers, action, unexpectedKeyCache)
-      if (warningMessage) {
-        warning(warningMessage)
-      }
     }
 
     let hasChanged = false
