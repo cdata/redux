@@ -83,6 +83,10 @@ function assertReducerShape(reducers) {
   })
 }
 
+const showWarnings = typeof process !== 'undefined' &&
+    process.env &&
+    process.env.NODE_ENV !== 'production';
+
 /**
  * Turns an object whose values are different reducer functions, into a single
  * reducer function. It will call every child reducer, and gather their results
@@ -105,6 +109,12 @@ export default function combineReducers(reducers) {
   for (let i = 0; i < reducerKeys.length; i++) {
     const key = reducerKeys[i]
 
+    if (showWarnings) {
+      if (typeof reducers[key] === 'undefined') {
+        warning(`No reducer provided for key "${key}"`)
+      }
+    }
+
     if (typeof reducers[key] === 'function') {
       finalReducers[key] = reducers[key]
     }
@@ -112,6 +122,10 @@ export default function combineReducers(reducers) {
   const finalReducerKeys = Object.keys(finalReducers)
 
   let unexpectedKeyCache
+  if (showWarnings) {
+    unexpectedKeyCache = {}
+  }
+
   let shapeAssertionError
   try {
     assertReducerShape(finalReducers)
@@ -122,6 +136,13 @@ export default function combineReducers(reducers) {
   return function combination(state = {}, action) {
     if (shapeAssertionError) {
       throw shapeAssertionError
+    }
+
+    if (showWarnings) {
+      const warningMessage = getUnexpectedStateShapeWarningMessage(state, finalReducers, action, unexpectedKeyCache)
+      if (warningMessage) {
+        warning(warningMessage)
+      }
     }
 
     let hasChanged = false
