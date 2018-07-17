@@ -12,6 +12,8 @@ import warning from './utils/warning.js'
 function isCrushed() {}
 
 if (
+  process &&
+  process.env &&
   process.env.NODE_ENV !== 'production' &&
   typeof isCrushed.name === 'string' &&
   isCrushed.name !== 'isCrushed'
