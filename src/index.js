@@ -12,7 +12,7 @@ import warning from './utils/warning.js'
 function isCrushed() {}
 
 if (
-  process &&
+  typeof process !== 'undefined' &&
   process.env &&
   process.env.NODE_ENV !== 'production' &&
   typeof isCrushed.name === 'string' &&
